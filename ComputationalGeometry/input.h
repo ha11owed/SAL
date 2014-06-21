@@ -21,6 +21,7 @@ public:
 		MouseRightReleased = 1 << 29,
 	};
 
+	MouseKeyboardInput() : keyType(None), key(0), x(-1), y(-1) {}
 	MouseKeyboardInput(unsigned char k, int mouseX, int mouseY) : keyType(None), key(k), x(mouseX), y(mouseY) {}
 	MouseKeyboardInput(KeyType kType, int mouseX, int mouseY) : keyType(kType), key(0), x(mouseX), y(mouseY) {}
 

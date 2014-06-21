@@ -104,7 +104,7 @@ Vector3D Renderer::mouseToCoord(int x, int y)
 
 	GLdouble fromX = 0.0, fromY = 0.0, fromZ = 0.0;
 	gluUnProject(winX, winY, 2.0, modelview, projection, viewport, &fromX, &fromY, &fromZ);
-	return Vector3D(posX - fromX, posY - fromY, - posZ); // invert z value
+	return Vector3D(posX - fromX, posY - fromY, -posZ); // invert z value
 
 	//return Vector3D(posX, posY, -posZ); // invert z value
 }
@@ -136,7 +136,7 @@ static void renderer_display()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	//gluLookAt(0, 0, -zCamera, 0, 0, 0, 0, 1, 0);
-	glTranslatef(0.0, 0.0, zCamera);
+	glTranslated(0.0, 0.0, zCamera);
 
 	glEnable(GL_LIGHTING);
 	glColor3d(1, 0, 0);
@@ -297,10 +297,10 @@ void Renderer::drawPoint(const Point3D& point, const Color& color)
 void Renderer::drawLine(const Point3D& p1, const Point3D& p2, const Color& color)
 {
 	glColor3f(color.r, color.g, color.b);
-	
+
 	glBegin(GL_LINES);
-	glVertex3f(p1.x(), p1.y(), p1.z());
-	glVertex3f(p2.x(), p2.y(), p2.z());
+	glVertex3d(p1.x(), p1.y(), p1.z());
+	glVertex3d(p2.x(), p2.y(), p2.z());
 	glEnd();
 }
 
@@ -313,13 +313,8 @@ void Renderer::drawVector(const Point3D& point, const Vector3D& vector, const Co
 	double tz = vector.z() + point.z();
 
 	glBegin(GL_LINES);
-	glVertex3f(point.x(), point.y(), point.z());
-	glVertex3f(tx, ty, tz);
+	glVertex3d(point.x(), point.y(), point.z());
+	glVertex3d(tx, ty, tz);
 	glEnd();
-
-	//glBegin(GL_TRIANGLES);
-	//glVertex3d(tx, ty, tz);
-	//glVertex3d(tx, ty, tz);
-	//glEnd();
 }
 
