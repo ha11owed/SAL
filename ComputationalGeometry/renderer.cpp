@@ -143,14 +143,16 @@ static void renderer_display()
 
 	Renderer& renderer = Renderer::instance();
 	Scene* scene = renderer.scene;
-	if (scene != nullptr) {
+	if (scene != nullptr)
+	{
 		scene->onDraw(&renderer);
 	}
 
 	glDisable(GL_LIGHTING);
 	glColor3d(0.1, 0.1, 0.4);
 
-	if (scene != nullptr) {
+	if (scene != nullptr)
+	{
 		scene->onDrawText(&renderer);
 	}
 
@@ -169,7 +171,8 @@ static void renderer_key(unsigned char key, int x, int y)
 	case 'q': glutLeaveMainLoop();      break;
 
 	default:
-		if (scene != nullptr) {
+		if (scene != nullptr)
+		{
 			scene->onInput(&renderer, MouseKeyboardInput(key, x, y));
 		}
 		break;
@@ -181,7 +184,8 @@ static void renderer_key(unsigned char key, int x, int y)
 static void renderer_mouse(int button, int state, int x, int y)
 {
 	MouseKeyboardInput::KeyType mb = MouseKeyboardInput::None;
-	switch (button) {
+	switch (button)
+	{
 	case GLUT_LEFT_BUTTON:
 		mb = (state == GLUT_DOWN) ? MouseKeyboardInput::MouseLeftPressed : MouseKeyboardInput::MouseLeftReleased;
 		break;
@@ -195,8 +199,14 @@ static void renderer_mouse(int button, int state, int x, int y)
 
 	Renderer& renderer = Renderer::instance();
 	Scene* scene = renderer.scene;
-	if (scene != nullptr) {
+	if (scene != nullptr)
+	{
 		scene->onInput(&renderer, MouseKeyboardInput(mb, x, y));
+	}
+
+	if (mb != MouseKeyboardInput::None)
+	{
+		glutPostRedisplay();
 	}
 }
 
@@ -227,11 +237,30 @@ static void renderer_special(int key, int x, int y)
 	if (scene != nullptr) {
 		scene->onInput(&renderer, MouseKeyboardInput(kt, x, y));
 	}
+
+	glutPostRedisplay();
 }
 
 static void renderer_idle()
 {
-	glutPostRedisplay();
+	// Do some framerate limiting to prevent CPU usage of 100%
+	const int TICKS_PER_SECOND = 25;
+	const int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
+
+	static int lastTime = glutGet(GLUT_ELAPSED_TIME);
+
+	int currentTime = glutGet(GLUT_ELAPSED_TIME);
+	int deltaTime = std::abs(currentTime - lastTime);
+
+	if (deltaTime >= SKIP_TICKS)
+	{
+		lastTime = currentTime;
+		glutPostRedisplay();
+	}
+	else
+	{
+		Sleep(1);
+	}
 }
 
 Renderer& Renderer::instance()
