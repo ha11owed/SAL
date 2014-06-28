@@ -1,33 +1,37 @@
 #pragma once
 
 #include <vector>
+#include <complex>
 #include <algorithm>
 
-class Polynomial
+template<typename T>
+class TPolynomial
 {
 public:
-	Polynomial(size_t n) : coefficients(n, 0.0) {}
-	Polynomial(const Polynomial& other) : coefficients(other.coefficients) {}
-	Polynomial() {}
-	~Polynomial() {}
+	TPolynomial(size_t n) : coefficients(n) {}
+	TPolynomial(const TPolynomial& other) : coefficients(other.coefficients) {}
+	TPolynomial() {}
+	~TPolynomial() {}
 
-	double& operator[](size_t index)                   { return coefficients[index]; }
-	double operator[](size_t index) const              { return coefficients[index]; }
-	size_t size() const                                { return coefficients.size(); }
-	size_t resize(size_t newSize, double defaultValue) { coefficients.resize(newSize, defaultValue); }
+	      T&   operator[](size_t index)                       { return coefficients[index]; }
+	const T&   operator[](size_t index) const                 { return coefficients[index]; }
+	size_t     size() const                                   { return coefficients.size(); }
+	void       resize(size_t newSize,  const T& defaultValue) { coefficients.resize(newSize, defaultValue); }
+	void       resize(size_t newSize)                         { coefficients.resize(newSize); }
 
-	double calculate(double x) const;
-	void add(const Polynomial& p, Polynomial& outResult) const;
-	void multiplyNaive(const Polynomial& p, Polynomial& outResult) const;
-	void multiplyKaratsuba(const Polynomial& p, Polynomial& outResult) const;
+	T calculate(const T& x) const;
+	void add(const TPolynomial& p, TPolynomial& outResult) const;
+	void multiplyNaive(const TPolynomial& p, TPolynomial& outResult) const;
+	void multiplyKaratsuba(const TPolynomial& p, TPolynomial& outResult) const;
 
 private:
-	std::vector<double> coefficients;
+	std::vector<T> coefficients;
 };
 
-inline double Polynomial::calculate(double x) const
+template<typename T>
+inline T TPolynomial<T>::calculate(const T& x) const
 {
-	double px = 1.0, r = 0.0;
+	T px = 1.0, r = 0.0;
 
 	size_t n = coefficients.size();
 	for (size_t i = 0; i < n; i++)
@@ -38,7 +42,8 @@ inline double Polynomial::calculate(double x) const
 	return r;
 }
 
-inline void Polynomial::add(const Polynomial& other, Polynomial& outResult) const
+template<typename T>
+inline void TPolynomial<T>::add(const TPolynomial& other, TPolynomial& outResult) const
 {
 	size_t n = coefficients.size();
 	size_t m = other.coefficients.size();
@@ -51,7 +56,7 @@ inline void Polynomial::add(const Polynomial& other, Polynomial& outResult) cons
 		outResult.coefficients[i] = coefficients[i] + other.coefficients[i];
 	}
 
-	const std::vector<double>* v = &(other.coefficients);
+	const std::vector<T>* v = &(other.coefficients);
 	if (n > m)
 	{
 		v = &coefficients;
@@ -63,11 +68,12 @@ inline void Polynomial::add(const Polynomial& other, Polynomial& outResult) cons
 	}
 }
 
-inline void Polynomial::multiplyNaive(const Polynomial& other, Polynomial& outResult) const
+template<typename T>
+inline void TPolynomial<T>::multiplyNaive(const TPolynomial& other, TPolynomial& outResult) const
 {
-	const std::vector<double>& p1 = coefficients;
-	const std::vector<double>& p2 = other.coefficients;
-	std::vector<double>& res = outResult.coefficients;
+	const std::vector<T>& p1 = coefficients;
+	const std::vector<T>& p2 = other.coefficients;
+	std::vector<T>& res = outResult.coefficients;
 
 	size_t n1 = p1.size();
 	size_t n2 = p2.size();
@@ -82,13 +88,14 @@ inline void Polynomial::multiplyNaive(const Polynomial& other, Polynomial& outRe
 	}
 }
 
-inline void Polynomial::multiplyKaratsuba(const Polynomial& other, Polynomial& outResult) const
+template<typename T>
+inline void TPolynomial<T>::multiplyKaratsuba(const TPolynomial& other, TPolynomial& outResult) const
 {
-	const std::vector<double>& p1 = coefficients;
-	const std::vector<double>& p2 = other.coefficients;
-	std::vector<double>& res = outResult.coefficients;
+	const std::vector<T>& p1 = coefficients;
+	const std::vector<T>& p2 = other.coefficients;
+	std::vector<T>& res = outResult.coefficients;
 
-	auto karatsuba = [](size_t n, const std::vector<double>& p1, const std::vector<double>& p2)
+	auto karatsuba = [](size_t n, const std::vector<T>& p1, const std::vector<T>& p2)
 	{
 
 	};
@@ -105,4 +112,9 @@ inline void Polynomial::multiplyKaratsuba(const Polynomial& other, Polynomial& o
 		}
 	}
 }
+
+// we are not really going to work with so many types, just real and complex.
+typedef TPolynomial<double>                    Polynomial;
+typedef TPolynomial< std::complex<double> >    PolynomialComplex;
+
 

@@ -1,17 +1,13 @@
 #pragma once
 
-#include <vector>
-#include <complex>
 #include "polynomial.h"
 
-class FFT
+namespace fft
 {
-public:
-	FFT() {};
-	~FFT() {};
+	void transformInplace(PolynomialComplex& polynomial, bool inverse);
 
+	void transformDirect(const Polynomial& polynomial, PolynomialComplex& outTransformed);
 
-private:
-	std::vector<std::pair<double, double>> pointValues;
-};
-
+	void transformInverse(const PolynomialComplex& polynomial, Polynomial& outTransformed);
+	
+}
