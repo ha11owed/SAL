@@ -233,7 +233,7 @@ void DemoScene::onInput(Renderer * renderer, const MouseKeyboardInput& input)
 	else {
 		int demoCnt = demoCount();
 		if (demoIdx >= demoCnt) {
-			demoIdx = demoCnt;
+			demoIdx = demoCnt - 1;
 		}
 	}
 
