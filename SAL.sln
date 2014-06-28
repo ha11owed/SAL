@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ComputationalGeometry", "ComputationalGeometry\ComputationalGeometry.vcxproj", "{AEB9044D-758E-4C85-A169-2D963E91F2C3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Polynomial", "Polynomial\Polynomial.vcxproj", "{2E29776B-7FDD-424B-9BCE-B1721AB25FD9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -15,6 +17,10 @@ Global
 		{AEB9044D-758E-4C85-A169-2D963E91F2C3}.Debug|Win32.Build.0 = Debug|Win32
 		{AEB9044D-758E-4C85-A169-2D963E91F2C3}.Release|Win32.ActiveCfg = Release|Win32
 		{AEB9044D-758E-4C85-A169-2D963E91F2C3}.Release|Win32.Build.0 = Release|Win32
+		{2E29776B-7FDD-424B-9BCE-B1721AB25FD9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2E29776B-7FDD-424B-9BCE-B1721AB25FD9}.Debug|Win32.Build.0 = Debug|Win32
+		{2E29776B-7FDD-424B-9BCE-B1721AB25FD9}.Release|Win32.ActiveCfg = Release|Win32
+		{2E29776B-7FDD-424B-9BCE-B1721AB25FD9}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
