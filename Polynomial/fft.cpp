@@ -98,5 +98,35 @@ namespace fft
 		}
 	}
 
+	void multiply(const Polynomial& p1, const Polynomial& p2, Polynomial& outResult)
+	{
+		PolynomialComplex p1fft(p1.size());
+		for(size_t k = 0; k < p1.size(); k++)
+		{
+			p1fft[k] = p1[k];
+		}
+		PolynomialComplex p2fft(p2.size());
+		for(size_t k = 0; k < p2.size(); k++)
+		{
+			p2fft[k] = p2[k];
+		}
+		fft::transformInplace(p1fft, false);
+		fft::transformInplace(p2fft, false);
+		outResult.resize(p1fft.size());
+		for(size_t k = 0; k < p1fft.size(); k++)
+		{
+			p1fft[k] = p1fft[k] * p2fft[k];
+		}
+
+		fft::transformInplace(p1fft, true);
+
+		std::complex<double> c;
+		outResult.resize(p1fft.size());
+		for(size_t k = 0; k < p1fft.size(); k++)
+		{
+			outResult[k] = p1fft[k].real();
+		}
+	}
+
 }
 

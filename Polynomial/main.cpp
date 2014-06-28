@@ -39,7 +39,7 @@ void testPolynomialCalculate()
 void testMultiplication()
 {
 	const size_t NR_TESTS = 50;
-	const size_t N = 10000;
+	const size_t N = 10;
 
 	Polynomial p1Orig(N);
 	Polynomial p2Orig(N);
@@ -49,6 +49,15 @@ void testMultiplication()
 		p2Orig[i] = 0.00001 * std::rand();
 	}
 
+	{
+		Polynomial p1(p1Orig);
+		Polynomial p2(p2Orig);
+		Polynomial rNaive;
+		p1.multiplyNaive(p2, rNaive);
+
+		Polynomial rFFT;
+		fft::multiply(p1Orig, p2Orig, rFFT);
+	}
 
 	startTimer("Naive polynomial multiplication");
 	for (size_t j = 0; j < NR_TESTS; j++)
@@ -63,24 +72,8 @@ void testMultiplication()
 	startTimer("FFT polynomial multiplication");
 	for (size_t j = 0; j < NR_TESTS; j++)
 	{
-		PolynomialComplex p1fft(p1Orig.size());
-		for(size_t k = 0; k < p1Orig.size(); k++)
-		{
-			p1fft[k] = p1Orig[k];
-		}
-		PolynomialComplex p2fft(p2Orig.size());
-		for(size_t k = 0; k < p2Orig.size(); k++)
-		{
-			p2fft[k] = p2Orig[k];
-		}
-		fft::transformInplace(p1fft, false);
-		fft::transformInplace(p2fft, false);
-		for(size_t k = 0; k < p1fft.size(); k++)
-		{
-			p1fft[k] = p1fft[k] * p2fft[k];
-		}
-
-		fft::transformInplace(p1fft, true);
+		Polynomial r;
+		fft::multiply(p1Orig, p2Orig, r);
 	}
 	endTimer("FFT polynomial multiplication");
 }

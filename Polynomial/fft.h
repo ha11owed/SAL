@@ -10,4 +10,5 @@ namespace fft
 
 	void transformInverse(const PolynomialComplex& polynomial, Polynomial& outTransformed);
 	
+	void multiply(const Polynomial& p1, const Polynomial& p2, Polynomial& outResult);
 }
