@@ -13,6 +13,8 @@ public:
 	double x() const { return _x; }
 	double y() const { return _y; }
 
+	double dinstanceTo(const Point2D& other) const { return std::sqrt((_x - other._x)*(_x - other._x) + (_y - other._y)*(_y - other._y)); }
+
 	bool equals(const Point2D& other) const { return _x == other._x && _y == other._y; }
 	bool operator == (const Point2D& other) const { return equals(other); }
 	bool operator != (const Point2D& other) const { return !equals(other); }

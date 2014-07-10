@@ -169,3 +169,98 @@ inline void convexHullGrahamScan(const std::vector<Point2D>& points, std::vector
 	}
 	outConvexHull = stack;
 }
+
+inline double minDistanceNaive(size_t start, size_t n, const std::vector<Point2D>& points, std::pair<Point2D, Point2D>& outMinDistance)
+{
+	double d = 1E+37;
+	for (size_t i = start; i < n; i++)
+	{
+		for (size_t j = i + 1; j < n; j++)
+		{
+			double dij = points[i].dinstanceTo(points[j]);
+			if (d > dij)
+			{
+				d = dij;
+				outMinDistance = std::pair<Point2D, Point2D>(points[i], points[j]);
+			}
+		}
+	}
+	return d;
+}
+
+inline double minDistance(size_t start, size_t n, const std::vector<Point2D>& points, const std::vector<Point2D>& pointsY, std::pair<Point2D, Point2D>& outClosest)
+{
+	double dMin;
+	if (n <= 3)
+	{
+		dMin = minDistanceNaive(start, n, points, outClosest);
+	}
+	else
+	{
+		size_t n2 = n / 2;
+		// n2 must be at least 2
+
+		std::pair<Point2D, Point2D> lMinPair;
+		double lMin = minDistance(start, n2, points, pointsY, lMinPair);
+		std::pair<Point2D, Point2D> rMinPair;
+		double rMin = minDistance(start + n2, n - n2, points, pointsY, rMinPair);
+		
+		if (rMin < lMin)
+		{
+			outClosest = rMinPair;
+			dMin = rMin;
+		}
+		else
+		{
+			outClosest = lMinPair;
+			dMin = lMin;
+		}
+
+		double middleX = points[start + n2].x();
+		std::vector<int> inRange;
+		for (size_t i = 0; i < pointsY.size(); i++)
+		{
+			double diff = std::abs(pointsY[i].x() - middleX);
+			if (diff < dMin)
+			{
+				inRange.push_back(i);
+			}
+		}
+
+		// Don't use size_t because of the -8. it can overflow
+		for (int i = 0; i < (int)inRange.size() - 1; i++)
+		{
+			for (int j = i + 1; j < i + 8 && j < inRange.size(); j++)
+			{
+				double d = pointsY[inRange[i]].dinstanceTo(pointsY[inRange[j]]);
+				if (d < dMin)
+				{
+					dMin = d;
+					outClosest = std::pair<Point2D, Point2D>(pointsY[inRange[i]], pointsY[inRange[j]]);
+				}
+			}
+		}
+	}
+
+	return dMin;
+}
+
+inline void minDistance(const std::vector<Point2D>& points, std::vector<Point2D>& outMinDistance)
+{
+	std::vector<Point2D> sortedPoints(points);
+	std::sort(sortedPoints.begin(), sortedPoints.end(), [](const Point2D& p1, const Point2D& p2) -> bool
+	{
+		return p1.x() < p1.x();
+	});
+
+	std::vector<Point2D> sortedPointsY(points);
+	std::sort(sortedPointsY.begin(), sortedPointsY.end(), [](const Point2D& p1, const Point2D& p2) -> bool
+	{
+		return p1.y() < p2.y();
+	});
+	
+	std::pair<Point2D, Point2D> minPair;
+	minDistance(0, sortedPoints.size(), sortedPoints, sortedPointsY, minPair);
+	outMinDistance.push_back(minPair.first);
+	outMinDistance.push_back(minPair.second);
+}

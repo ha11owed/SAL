@@ -128,7 +128,7 @@ void demoAnyIntersect(DemoScene* scene, Renderer* renderer)
 
 void demoConvexHull(DemoScene* scene, Renderer* renderer)
 {
-	static bool wasRun = false;
+	static bool canRun = false;
 	std::vector<Point3D>& userClicks = scene->userClicks;
 	std::size_t n = userClicks.size();
 
@@ -136,15 +136,24 @@ void demoConvexHull(DemoScene* scene, Renderer* renderer)
 	{
 		renderer->drawPoint(userClicks[i], c);
 	}
+
+	std::vector<Point2D> points;
+	double z;
 	if (n >= 3)
 	{
-		double z = userClicks[0].z();
-		std::vector<Point2D> points;
+		z = userClicks[0].z();
 		points.reserve(n);
 		for (size_t i = 0; i < n; i++) {
 			points.push_back(Point2D(userClicks[i].x(), userClicks[i].y()));
 		}
 
+		canRun = true;
+	}
+
+	std::sprintf(scene->lastMsg, "Right click to calculate.");
+
+	if (canRun && lastUserInput.keyType == MouseKeyboardInput::MouseRightReleased)
+	{
 		std::vector<Point2D> outConvexHull;
 		convexHullGrahamScan(points, outConvexHull);
 
@@ -153,14 +162,44 @@ void demoConvexHull(DemoScene* scene, Renderer* renderer)
 			renderer->drawLine(Point3D(outConvexHull[i], z), Point3D(outConvexHull[i + 1], z), c);
 		}
 		renderer->drawLine(Point3D(outConvexHull[0], z), Point3D(outConvexHull[outConvexHull.size() - 1], z), c);
-		wasRun = true;
+	}
+}
+
+void demoClosestPoints(DemoScene* scene, Renderer* renderer)
+{
+	static bool canRun = false;
+	std::vector<Point3D>& userClicks = scene->userClicks;
+	std::size_t n = userClicks.size();
+
+	for (size_t i = 0; i < n; i++)
+	{
+		renderer->drawPoint(userClicks[i], c);
 	}
 
-	std::sprintf(scene->lastMsg, "Right click to reset.");
+	double z;
+	std::vector<Point2D> points;
 
-	if (wasRun && lastUserInput.keyType == MouseKeyboardInput::MouseRightReleased) {
-		wasRun = false;
-		userClicks.clear();
+	if (n >= 3)
+	{
+		z = userClicks[0].z();
+		points.reserve(n);
+		for (size_t i = 0; i < n; i++)
+		{
+			points.push_back(Point2D(userClicks[i].x(), userClicks[i].y()));
+		}
+		canRun = true;
+	}
+
+	std::sprintf(scene->lastMsg, "Right click to calculate.");
+
+	if (canRun && lastUserInput.keyType == MouseKeyboardInput::MouseRightReleased)
+	{
+		std::vector<Point2D> outPoints;
+		minDistance(points, outPoints);
+		if (outPoints.size() == 2)
+		{
+			renderer->drawLine(Point3D(outPoints[0], z), Point3D(outPoints[1], z), c);
+		}
 	}
 }
 
@@ -172,6 +211,7 @@ struct Demo
 };
 
 Demo demos[] = {
+	{ "Closest points", demoClosestPoints, nullptr },
 	{ "Convex hull", demoConvexHull, nullptr },
 	{ "Any intersection", demoAnyIntersect, nullptr },
 	{ "Intersection", demoIntersect, nullptr },
