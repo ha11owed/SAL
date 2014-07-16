@@ -230,7 +230,7 @@ inline double minDistance(size_t start, size_t n, const std::vector<Point2D>& po
 		// Don't use size_t because of the -8. it can overflow
 		for (int i = 0; i < (int)inRange.size() - 1; i++)
 		{
-			for (int j = i + 1; j < i + 8 && j < inRange.size(); j++)
+			for (int j = i + 1; j < i + 8 && j < (int)inRange.size(); j++)
 			{
 				double d = pointsY[inRange[i]].dinstanceTo(pointsY[inRange[j]]);
 				if (d < dMin)

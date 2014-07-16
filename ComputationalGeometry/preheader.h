@@ -2,6 +2,7 @@
 #ifndef VC_EXTRALEAN
 #define VC_EXTRALEAN            // Exclude rarely-used stuff from Windows headers
 #endif
+#define NOMINMAX // exclude microsoft definition of min/max
 
 // allow deprecated printf
 #define _CRT_SECURE_NO_WARNINGS

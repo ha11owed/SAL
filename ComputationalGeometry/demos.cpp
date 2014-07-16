@@ -203,6 +203,44 @@ void demoClosestPoints(DemoScene* scene, Renderer* renderer)
 	}
 }
 
+void demoVoronoi(DemoScene* scene, Renderer* renderer)
+{
+	static bool canRun = false;
+	std::vector<Point3D>& userClicks = scene->userClicks;
+	std::size_t n = userClicks.size();
+
+	for (size_t i = 0; i < n; i++)
+	{
+		renderer->drawPoint(userClicks[i], c);
+	}
+
+	double z;
+	std::vector<Point2D> points;
+
+	if (n >= 3)
+	{
+		z = userClicks[0].z();
+		points.reserve(n);
+		for (size_t i = 0; i < n; i++)
+		{
+			points.push_back(Point2D(userClicks[i].x(), userClicks[i].y()));
+		}
+		canRun = true;
+	}
+
+	std::sprintf(scene->lastMsg, "Right click to execute voronoi :D");
+
+	if (canRun && lastUserInput.keyType == MouseKeyboardInput::MouseRightReleased)
+	{
+		std::vector<Point2D> outPoints;
+		minDistance(points, outPoints);
+		if (outPoints.size() == 2)
+		{
+			renderer->drawLine(Point3D(outPoints[0], z), Point3D(outPoints[1], z), c);
+		}
+	}
+}
+
 struct Demo
 {
 	char *title;
